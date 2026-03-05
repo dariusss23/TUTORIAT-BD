@@ -2,6 +2,6 @@
 
 ## 📚 Tutoriat Baze de Date
 
-### Tutori
+### 👨🏻‍🏫 Tutori
 - Sava Darius-Stefan
 - Salcianu Stefan-Alexandru
