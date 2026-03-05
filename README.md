@@ -1,4 +1,4 @@
-# TUTORIAT-DB
+# TUTORIAT-BD
 
 ## 📚 Tutoriat Baze de Date
 
