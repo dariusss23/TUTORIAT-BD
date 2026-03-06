@@ -21,3 +21,8 @@
 | **tutoriat3** | ⏱️ In lucru | 🔜 Urmeaza |
 | **tutoriat4** | ⏱️ In lucru | 🔜 Urmeaza |
 | **tutoriat5** | ⏱️ In lucru | 🔜 Urmeaza |
+| **tutoriat6** | ⏱️ In lucru | 🔜 Urmeaza |
+| **tutoriat7** | ⏱️ In lucru | 🔜 Urmeaza |
+| **tutoriat8** | ⏱️ In lucru | 🔜 Urmeaza |
+| **tutoriat9** | ⏱️ In lucru | 🔜 Urmeaza |
+| **tutoriat10** | ⏱️ In lucru | 🔜 Urmeaza |
