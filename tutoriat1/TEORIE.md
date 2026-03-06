@@ -50,9 +50,10 @@ Sintaxa generală a comenzii `SELECT` urmează această structură:
 ```sql
 SELECT { [ {DISTINCT | UNIQUE} | ALL] lista_campuri | *} 
 FROM [nume_schemă.]nume_obiect 
-[, [nume_schemă.]nume_obiect …] 
-[WHERE condiție] 
-[START WITH condiție CONNECT BY condiție] 
-[GROUP BY expresie] 
-[HAVING condiție] 
-[ORDER BY {expresie | poziție} [ASC|DESC]];
+[, [nume_schemă.]nume_obiect ...] 
+[WHERE condiție_clauza_where] 
+[START WITH condiție_clauza_start_with
+ CONNECT BY condiție_clauza_connect_by] 
+[GROUP BY expresie [, expresie ...] 
+[HAVING condiție_clauza_having] 
+[ORDER BY {expresie | poziţie} [, {expresie | poziţie} ...] ]; 
