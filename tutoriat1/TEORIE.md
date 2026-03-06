@@ -168,13 +168,77 @@ Dacă aliasul conține **spații**, trebuie pus între ghilimele `" "`.
 
 ## 6. Filtrarea Datelor (WHERE) și Operatori
 
-Dacă un query are mai multe condiții, se folosește o singură clauză `WHERE`, condițiile fiind legate prin operatori logici.
+Dacă un query are mai multe condiții, se folosește **o singură clauză `WHERE`**, iar condițiile sunt legate prin operatori logici.
 
-### Operatori:
-* **Comparație**: `=`, `<>`, `!=`, `<`, `<=`, `>`, `>=`.
-* **Apartenență la interval**: `BETWEEN val1 AND val2` (interval închis).
-* **Apartenență la mulțime**: `IN (val1, val2, ... )`.
-* **Logici**: `AND`, `OR`, `NOT`.
+---
+
+### 1. Operatori de comparație
+
+`=`, `<>`, `!=`, `<`, `<=`, `>`, `>=`
+
+```sql
+SELECT FIRST_NAME, SALARY
+FROM EMPLOYEES
+WHERE SALARY >= 3000;
+```
+
+Returnează angajații care au salariul **mai mare sau egal cu 3000**.
+
+---
+
+### 2. Apartenență la interval (`BETWEEN`)
+
+`BETWEEN val1 AND val2` verifică dacă valoarea se află într-un **interval închis**.
+
+```sql
+SELECT FIRST_NAME, SALARY
+FROM EMPLOYEES
+WHERE SALARY BETWEEN 1500 AND 3000;
+```
+
+Returnează angajații cu salariul **între 1500 și 3000 inclusiv**.
+
+---
+
+### 3. Apartenență la mulțime (`IN`)
+
+`IN` verifică dacă o valoare aparține unei **liste de valori**.
+
+```sql
+SELECT FIRST_NAME, DEPARTMENT_ID
+FROM EMPLOYEES
+WHERE DEPARTMENT_ID IN (10, 30);
+```
+
+Returnează angajații care lucrează în **departamentul 10 sau 30**.
+
+---
+
+### 4. Operatori logici (`AND`, `OR`, `NOT`)
+
+Permite combinarea mai multor condiții.
+
+```sql
+SELECT FIRST_NAME, SALARY, DEPARTMENT_ID
+FROM EMPLOYEES
+WHERE SALARY >= 2000 AND DEPARTMENT_ID = 50;
+```
+
+Returnează angajații care au **salariul ≥ 2000 și lucrează în departamentul 50**.
+
+---
+
+### Exemplu cu mai mulți operatori
+
+```sql
+SELECT FIRST_NAME, JOB_ID, SALARY
+FROM EMPLOYEES
+WHERE (DEPARTMENT_ID IN (10, 30)) AND SALARY > 1500 AND SALARY NOT BETWEEN 5000 AND 7000;
+```
+
+Query-ul filtrează angajații:
+- din departamentele **10 sau 30**
+- cu salariul **mai mare de 1500**, dar **nu între 5000 și 7000**
 
 ---
 
