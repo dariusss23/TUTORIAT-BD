@@ -8,6 +8,6 @@
 
 ### 🎯 Obiectivele Tutoriatului
 - Intelegerea conceptelor de **modelare relationala** (ERD).
-- Stapanirea limbajului **SQL** (LDD, LMD, LCD).
+- Stapanirea limbajului **SQL** (LDD, LMD).
 - Invatarea bunelor practici in **normalizarea** bazelor de date.
 - Pregatire pentru examenul partial si cel final.
