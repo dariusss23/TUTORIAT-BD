@@ -268,15 +268,135 @@ Query-ul filtrează angajații:
 
 ---
 
+### 9.1 Exemple practice
+
+#### Sortare crescătoare (default, ASC)
+
+```sql
+SELECT FIRST_NAME, SALARY
+FROM EMPLOYEES
+ORDER BY SALARY;
+
+SELECT FIRST_NAME, SALARY
+FROM EMPLOYEES
+ORDER BY SALARY ASC;
+```
+
+Cele 2 query-uri sunt echivalente, ele returnează angajații ordonați după **salariul crescător**.
+
+---
+
+#### Sortare descrescătoare (DESC)
+
+```sql
+SELECT FIRST_NAME, SALARY
+FROM EMPLOYEES
+ORDER BY SALARY DESC;
+```
+
+Returnează angajații ordonați după **salariul descrescător**.
+
+---
+
+#### Sortare după mai multe coloane
+
+```sql
+SELECT FIRST_NAME, SALARY, COMMISSION_PCT
+FROM EMPLOYEES
+ORDER BY SALARY DESC, COMMISSION_PCT DESC;
+```
+
+Sortarea se face mai întâi după **SALARY descrescător**, apoi după **COMMISSION_PCT descrescător**.  
+Valorile `NULL` sunt tratate corespunzător în fiecare coloană.
+
+---
+
 ## 10. Pattern Matching (LIKE)
 
 Folosit pentru a căuta șabloane în șiruri de caractere:
-* `_` (underscore): reprezintă un singur caracter.
-* `%` (procent): reprezintă zero, unul sau mai multe caractere.
 
-**Exemple:**
-* `LIKE '__A%'` -> Șir de minim 3 caractere, unde al 3-lea este 'A'.
-* `LIKE '_B_%'` -> Șir de minim 3 caractere, unde al 2-lea este 'B'.
+* `_` (underscore) – un singur caracter  
+* `%` (procent) – zero, unul sau mai multe caractere  
+
+---
+
+### 10.1 Nume care încep cu 'J'
+
+```sql
+SELECT FIRST_NAME
+FROM EMPLOYEES
+WHERE FIRST_NAME LIKE 'J%';
+```
+
+**Exemple rezultate:** `Jack`, `Jill`, `Jason`, `John`  
+
+---
+
+### 10.2 Al doilea caracter este 'a'
+
+```sql
+SELECT FIRST_NAME
+FROM EMPLOYEES
+WHERE FIRST_NAME LIKE '_a%';
+```
+
+**Exemple rezultate:** `Jack`, `Marlon`  
+- `_` pentru primul caracter  
+- `a%` pentru restul șirului  
+
+---
+
+### 10.3 Numele are exact 4 caractere
+
+```sql
+SELECT FIRST_NAME
+FROM EMPLOYEES
+WHERE FIRST_NAME LIKE '____';
+```
+
+**Exemple rezultate:** `Jack`, `Jill`, `John`  
+- Fiecare `_` reprezintă câte un caracter  
+
+---
+
+### 10.4 Numele se termină cu 'n'
+
+```sql
+SELECT FIRST_NAME
+FROM EMPLOYEES
+WHERE FIRST_NAME LIKE '%n';
+```
+
+**Exemple rezultate:** `Jason`, `Brian`  
+- `%` permite orice șir înainte de `n`  
+
+---
+
+### 10.5 Numele începe cu 'J' și se termină cu 'k'
+
+```sql
+SELECT FIRST_NAME
+FROM EMPLOYEES
+WHERE FIRST_NAME LIKE 'J%k';
+```
+
+**Exemple rezultate:** `Jack`, `Jungk`  
+
+---
+
+### 10.6 Al doilea caracter este 'a' și numele se termină cu 'n'
+
+```sql
+SELECT FIRST_NAME
+FROM EMPLOYEES
+WHERE FIRST_NAME LIKE '_a%n';
+```
+
+**Exemple rezultate:** `Jason`, `Marlon`  
+- `_` pentru primul caracter  
+- `a` la al doilea  
+- `%` pentru restul șirului  
+- `n` la final
 
 ---
 
