@@ -10,7 +10,7 @@
 - Intelegerea conceptelor de **modelare relationala** (ERD).
 - Stapanirea limbajului **SQL** (LDD, LMD).
 - Invatarea bunelor practici in **normalizarea** bazelor de date.
-- Pregatire pentru colocviu si examenul final.
+- Pregatire pentru **colocviu** si **examenul final**.
 
 ### 📅 Planificarea Tuoriatelor
 
