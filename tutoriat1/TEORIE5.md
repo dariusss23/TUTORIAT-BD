@@ -1,355 +1,342 @@
-# 🔍 Subcereri (Subinterogări) în SQL Oracle
+# 📊 Funcții Grup și Clauzele GROUP BY, HAVING
 
 ---
 
-## 1. Ce este o Subcerere?
+## 1. Ce sunt Funcțiile Grup (Agregat)?
 
-O **subcerere** (subinterogare) este o comandă `SELECT` integrată într-o clauză a altei instrucțiuni SQL, numită **instrucțiune părinte** sau **instrucțiune exterioară**.
+**Funcțiile grup** (agregat) operează asupra unui set de linii și returnează **un singur rezultat** pentru fiecare grup. Spre deosebire de funcțiile single-row (care returnează un rezultat per linie), funcțiile agregat colapsează mai multe linii într-o singură valoare.
 
-Subcererile mai sunt numite și **instrucțiuni SELECT imbricate** sau **interioare**. Rezultatele subcererii sunt utilizate în cadrul cererii exterioare pentru a determina rezultatul final.
+### Funcțiile grup principale:
 
-```sql
-SELECT expresie1, expresie2
-FROM nume_tabel1
-WHERE expresie_conditie operator (
-    SELECT expresie
-    FROM nume_tabel2
-);
-```
-
----
-
-## 2. Clasificare: Nesincronizate vs. Sincronizate
-
-| Tip | Mod de evaluare | Direcție |
+| Funcție | Descriere | Tipuri de date acceptate |
 | :--- | :--- | :--- |
-| **Nesincronizate (necorelate)** | Cererea internă se execută **prima**, independent | Interior → Exterior |
-| **Sincronizate (corelate)** | Cererea externă furnizează valori cererii interne | Exterior → Interior → Exterior |
+| `COUNT(*)` | Numărul total de linii (**inclusiv NULL**) | Orice |
+| `COUNT(expr)` | Numărul de linii cu valori **non-NULL** | Orice |
+| `COUNT(DISTINCT col)` | Numărul de valori **distincte** non-NULL | Orice |
+| `SUM(expr)` | Suma valorilor | `NUMBER` |
+| `AVG(expr)` | Media aritmetică a valorilor | `NUMBER` |
+| `MAX(expr)` | Valoarea maximă | `NUMBER`, `CHAR`, `VARCHAR2`, `DATE` |
+| `MIN(expr)` | Valoarea minimă | `NUMBER`, `CHAR`, `VARCHAR2`, `DATE` |
 
 ---
 
-## 3. Subcereri Nesincronizate (Necorelate)
-
-Cererea internă este evaluată **o singură dată**, independent de cererea externă. Rezultatul ei este apoi folosit de cererea externă.
-
-### Pași de execuție:
-1. Cererea **internă** se execută prima și returnează o valoare (sau o mulțime de valori).
-2. Cererea **externă** se execută o singură dată, folosind valorile returnate.
+### Reguli generale:
+- Funcțiile agregat pot apărea în clauzele: **`SELECT`**, **`ORDER BY`** și **`HAVING`**.
+- `AVG`, `SUM`, `MIN`, `MAX`, `COUNT(coloana)` — **ignoră valorile `NULL`**.
+- `COUNT(*)` — **nu ignoră** valorile `NULL`, numără toate liniile.
+- `COUNT` returnează întotdeauna un număr **≥ 0** și **niciodată NULL**.
+- `AVG` și `SUM` operează **doar** asupra valorilor numerice.
+- `MAX` și `MIN` pot opera și asupra șirurilor de caractere sau datelor calendaristice.
 
 ---
 
-### 3.1. Exemplu cu `IN` în clauza `WHERE`
+## 2. Comportamentul funcțiilor față de NULL — Exemplu concret
 
 ```sql
--- Angajații care lucrează în departamente al căror nume conține litera 'A'
-SELECT *
-FROM EMPLOYEES E
-WHERE E.DEPARTMENT_ID IN (
-    SELECT D.DEPARTMENT_ID
-    FROM DEPARTMENTS D
-    WHERE UPPER(D.DEPARTMENT_NAME) LIKE '%A%'
-);
+-- Tabelul EMPLOYEES are 107 angajați, dintre care unul are DEPARTMENT_ID = NULL
+
+SELECT COUNT(DEPARTMENT_ID) FROM EMPLOYEES;
+-- rezultat: 106 (ignoră NULL-ul de pe coloana DEPARTMENT_ID)
+
+SELECT COUNT(EMPLOYEE_ID) FROM EMPLOYEES;
+-- rezultat: 107 (toate valorile de pe EMPLOYEE_ID sunt non-NULL)
+
+SELECT COUNT(*) FROM EMPLOYEES;
+-- rezultat: 107 (numără toate liniile, indiferent de NULL)
 ```
 
-> 💡 Subcererea returnează o **listă de ID-uri** de departamente, iar cererea externă filtrează angajații folosind acea listă.
+> 💡 **Rezumat comportament NULL:**
+> ```
+> COUNT(*)          → numără TOATE liniile (inclusiv NULL)
+> COUNT(coloana)    → numără doar valorile NON-NULL
+> COUNT(DISTINCT x) → numără valorile distincte NON-NULL
+> AVG, SUM, MIN, MAX, COUNT(col) → IGNORĂ valorile NULL
+> ```
 
 ---
 
-### 3.2. Exemplu cu funcție agregat
+### `COUNT(DISTINCT col)` — valori distincte
 
 ```sql
--- Angajații care câștigă mai mult decât media salariilor
-SELECT FIRST_NAME, SALARY
+-- Câte departamente distincte există în tabelul EMPLOYEES (excluzând NULL)
+SELECT COUNT(DISTINCT DEPARTMENT_ID)
+FROM EMPLOYEES;
+```
+
+---
+
+## 3. Clauza GROUP BY
+
+**`GROUP BY`** divide liniile unui tabel în **grupuri** pe baza valorilor uneia sau mai multor coloane. Funcțiile agregat se aplică apoi fiecărui grup în parte, returnând **un singur rezultat per grup**.
+
+### Sintaxă generală:
+
+```sql
+SELECT coloana_grupare, functie_agregat(coloana)
+FROM tabel
+[WHERE conditie]
+GROUP BY coloana_grupare
+[ORDER BY ...];
+```
+
+---
+
+### 3.1. Fără GROUP BY — funcția se aplică întregului tabel
+
+```sql
+-- Suma salariilor tuturor angajaților (fără GROUP BY → se aplică pe tot tabelul)
+SELECT SUM(SALARY)
+FROM EMPLOYEES E;
+```
+
+> 💡 Absența lui `GROUP BY` face ca întregul tabel să fie tratat ca **un singur grup**.
+
+---
+
+### 3.2. Cu GROUP BY — un rezultat per grup
+
+```sql
+-- Suma salariilor pe fiecare departament
+SELECT E.DEPARTMENT_ID, SUM(SALARY)
+FROM EMPLOYEES E
+GROUP BY E.DEPARTMENT_ID;
+```
+
+---
+
+### 3.3. GROUP BY cu subcerere nesincronizată în SELECT
+
+```sql
+-- Se pot adăuga și subcereri nesincronizate în SELECT alături de GROUP BY
+SELECT
+    E.DEPARTMENT_ID,
+    SUM(SALARY),
+    (SELECT 1 FROM DUAL)   -- subcerere nesincronizată (constantă)
+FROM EMPLOYEES E
+GROUP BY E.DEPARTMENT_ID;
+```
+
+> 💡 Subcererile **nesincronizate** (necorelate) sunt permise în `SELECT` alături de `GROUP BY`, deoarece returnează o valoare **constantă** — aceeași pentru fiecare grup.
+
+---
+
+### 3.4. GROUP BY pe mai multe coloane
+
+```sql
+-- Numărul de angajați per departament și per job
+SELECT DEPARTMENT_ID, JOB_ID, COUNT(*)
 FROM EMPLOYEES
-WHERE SALARY > (
-    SELECT AVG(SALARY)
-    FROM EMPLOYEES
-);
+GROUP BY DEPARTMENT_ID, JOB_ID;
 ```
 
 ---
 
-### 3.3. Exemplu cu `ANY` în clauza `WHERE`
+### 3.5. Statistici complete pe grupuri
 
 ```sql
--- Angajații cu salariul mai mare decât cel puțin un angajat din departamentul 20
-SELECT *
+SELECT DEPARTMENT_ID,
+       COUNT(*)        NR_ANGAJATI,
+       AVG(SALARY)     MEDIE,
+       MAX(SALARY)     MAXIM,
+       MIN(SALARY)     MINIM,
+       SUM(SALARY)     TOTAL
+FROM EMPLOYEES
+GROUP BY DEPARTMENT_ID
+ORDER BY DEPARTMENT_ID;
+```
+
+---
+
+## 4. Reguli importante pentru GROUP BY
+
+---
+
+### 4.1. ⚠️ Regula principală: ce apare în SELECT trebuie să apară în GROUP BY
+
+> **Toate coloanele care apar independent în clauza `SELECT` trebuie să apară și în clauza `GROUP BY`.**  
+> Excepție: funcțiile agregat și subcererile nesincronizate.
+
+```sql
+-- ✅ Corect: DEPARTMENT_ID apare și în GROUP BY
+SELECT E.DEPARTMENT_ID, SUM(SALARY)
 FROM EMPLOYEES E
-WHERE E.SALARY > ANY (
-    SELECT E2.SALARY
-    FROM EMPLOYEES E2
-    WHERE E2.DEPARTMENT_ID = 20
-);
--- Echivalent cu: SALARY > MIN(salariile din departamentul 20)
-```
+GROUP BY E.DEPARTMENT_ID;
 
----
-
-## 4. Subcereri Sincronizate (Corelate)
-
-Cererea externă furnizează o linie candidat cererii interne, care se execută **pentru fiecare linie** din cererea externă.
-
-### Pași de execuție:
-1. Cererea externă determină o **linie candidat**.
-2. Cererea internă se execută folosind valoarea liniei candidat.
-3. Rezultatul cererii interne este folosit pentru a **califica sau descalifica** linia candidat.
-4. Pașii se repetă pentru **fiecare linie** din tabelul extern.
-
----
-
-### 4.1. Exemplu subcerere corelată în `SELECT`
-
-```sql
--- Pentru fiecare angajat, afișează și numele departamentului său
-SELECT
-    E.EMPLOYEE_ID,
-    (
-        SELECT D.DEPARTMENT_NAME
-        FROM DEPARTMENTS D
-        WHERE D.DEPARTMENT_ID = E.DEPARTMENT_ID
-    )
-FROM EMPLOYEES E;
-```
-
-> 💡 Subcererea din `SELECT` primește `E.DEPARTMENT_ID` din cererea externă pentru **fiecare linie** în parte. Este o subcerere **corelată** și **scalară** (returnează exact 1 valoare).
-
----
-
-### 4.2. Exemplu subcerere corelată în `WHERE`
-
-```sql
--- Angajații care câștigă mai mult decât media salariilor din departamentul lor
-SELECT E.FIRST_NAME, E.SALARY, E.DEPARTMENT_ID
+-- ✅ Corect: subcerere nesincronizată nu trebuie pusă în GROUP BY
+SELECT E.DEPARTMENT_ID, SUM(SALARY), (SELECT 1 FROM DUAL)
 FROM EMPLOYEES E
-WHERE E.SALARY > (
-    SELECT AVG(E2.SALARY)
-    FROM EMPLOYEES E2
-    WHERE E2.DEPARTMENT_ID = E.DEPARTMENT_ID
-);
+GROUP BY E.DEPARTMENT_ID;
+
+-- ❌ Eroare ORA-00979: FIRST_NAME nu e funcție agregat și nu e în GROUP BY
+SELECT DEPARTMENT_ID, FIRST_NAME, AVG(SALARY)
+FROM EMPLOYEES
+GROUP BY DEPARTMENT_ID;
+```
+
+Expresiile valide în `SELECT` cu `GROUP BY`:
+
+| Tip expresie | Trebuie în GROUP BY? |
+| :--- | :---: |
+| Coloană simplă | ✅ Da |
+| Funcție agregat (`AVG`, `SUM` etc.) | ❌ Nu |
+| Subcerere nesincronizată | ❌ Nu |
+| Expresie bazată pe coloana de grupare | ✅ Da |
+
+---
+
+### 4.2. Sortare implicită
+
+Când este utilizată clauza `GROUP BY`, Oracle sortează implicit rezultatul în **ordine crescătoare** după coloanele de grupare.
+
+---
+
+### 4.3. NULL formează un grup separat
+
+Valorile `NULL` dintr-o coloană de grupare formează un **grup propriu**.
+
+```sql
+-- Angajații fără departament (NULL) formează propriul grup
+SELECT DEPARTMENT_ID, COUNT(*)
+FROM EMPLOYEES
+GROUP BY DEPARTMENT_ID;
+-- Un grup va afișa: NULL | 1
 ```
 
 ---
 
-## 5. Unde pot apărea subcererile?
+## 5. Clauza HAVING
 
-Subcererile pot fi folosite în mai multe clauze ale unei instrucțiuni SQL:
+**`HAVING`** permite restricționarea grupurilor returnate la cele care îndeplinesc o condiție. Este echivalentul lui `WHERE`, dar aplicat **grupurilor** — după ce acestea au fost formate.
 
----
-
-### 5.1. Subcerere în `WHERE`
-
-Cel mai frecvent caz — filtrarea rezultatelor pe baza valorilor returnate de subcerere.
+### Sintaxă generală:
 
 ```sql
-SELECT *
-FROM EMPLOYEES E
-WHERE E.DEPARTMENT_ID IN (
-    SELECT D.DEPARTMENT_ID
-    FROM DEPARTMENTS D
-    WHERE UPPER(D.DEPARTMENT_NAME) LIKE '%A%'
-);
+SELECT coloana_grupare, functie_agregat(coloana)
+FROM tabel
+[WHERE conditie_filtrare_linii]
+GROUP BY coloana_grupare
+HAVING conditie_filtrare_grupuri
+[ORDER BY ...];
 ```
 
 ---
 
-### 5.2. Subcerere în `SELECT`
-
-> ⚠️ **Regulă importantă:** O subcerere în `SELECT` poate returna **o singură înregistrare și o singură coloană** (valoare scalară). Altfel se produce eroare.
+### 5.1. Exemplu de bază cu HAVING
 
 ```sql
-SELECT
-    E.EMPLOYEE_ID,
-    (
-        SELECT D.DEPARTMENT_NAME
-        FROM DEPARTMENTS D
-        WHERE D.DEPARTMENT_ID = E.DEPARTMENT_ID
-    )
-FROM EMPLOYEES E;
-```
-
----
-
-### 5.3. Subcerere în `FROM` (tabel derivat)
-
-Subcererea înlocuiește un tabel, creând un **tabel derivat** temporar.
-
-> ⚠️ **Reguli obligatorii pentru subcererea din `FROM`:**
-> - Subcererea trebuie să primească un **alias** (ex: `T`).
-> - Coloanele obținute prin operații, funcții sau alte subcereri trebuie să primească și ele **alias**.
-
-```sql
--- Salariul anual al angajaților din departamentul 20
-SELECT T.EMPLOYEE_ID, T.SALARIU
-FROM (
-    SELECT E.EMPLOYEE_ID, E.SALARY * 12 SALARIU
-    FROM EMPLOYEES E
-    WHERE E.DEPARTMENT_ID = 20
-) T;
-```
-
-> 💡 `T` este alias-ul subcererii. `SALARIU` este alias-ul coloanei calculate `SALARY * 12` — **obligatoriu** deoarece este o expresie.
-
----
-
-### 5.4. Subcerere în `HAVING`
-
-```sql
--- Departamentele cu salariul mediu mai mare decât media generală
+-- Departamentele cu salariul mediu mai mare de 8000
 SELECT DEPARTMENT_ID, AVG(SALARY)
 FROM EMPLOYEES
 GROUP BY DEPARTMENT_ID
-HAVING AVG(SALARY) > (
-    SELECT AVG(SALARY)
-    FROM EMPLOYEES
-);
+HAVING AVG(SALARY) > 8000;
 ```
 
 ---
 
-## 6. Operatori pentru Subcereri
-
-### 6.1. Operatori Single-Row
-
-Folosiți când subcererea returnează **o singură linie**:
-
-| Operator | Semnificație |
-| :---: | :--- |
-| `=` | Egal cu valoarea returnată |
-| `<>` sau `!=` | Diferit de valoarea returnată |
-| `>` | Mai mare decât valoarea returnată |
-| `>=` | Mai mare sau egal |
-| `<` | Mai mic decât valoarea returnată |
-| `<=` | Mai mic sau egal |
-
-> ⚠️ Dacă o subcerere cu operator single-row returnează **mai mult de o linie**, se produce eroare ORA-01427.
-
----
-
-### 6.2. Operatori Multi-Row
-
-Folosiți când subcererea returnează **mai multe linii**:
-
-| Operator | Semnificație |
-| :---: | :--- |
-| `IN` | Egal cu oricare valoare din listă |
-| `NOT IN` | Diferit de toate valorile din listă |
-| `ANY` / `SOME` | Condiție adevărată față de **cel puțin una** din valori |
-| `ALL` | Condiție adevărată față de **toate** valorile |
-
-> 💡 `NOT` poate fi combinat cu `IN`, `ANY` și `ALL`.  
-> 💡 `SOME` este sinonim cu `ANY` (standard ISO).
-
----
-
-## 7. Detalii despre `ANY` și `ALL`
-
-### `ANY` — „cel puțin una din valori"
-
-Condiția este adevărată dacă este satisfăcută de **oricare** valoare din subcerere.
-
-```
-3 > ANY (4, 2, 5)  →  TRUE   (3 > 2 ✅)
-3 > ANY (4, 5, 5)  →  FALSE  (3 nu este > decât nicio valoare din listă)
-```
+### 5.2. HAVING cu mai multe condiții
 
 ```sql
--- Angajați cu salariu mai mare decât cel puțin un angajat din departamentul 20
-WHERE SALARY > ANY (SELECT SALARY FROM EMPLOYEES WHERE DEPARTMENT_ID = 20)
--- Echivalent cu: SALARY > MIN(salariile din departamentul 20)
+-- Departamentele cu mai mult de 5 angajați și salariul mediu > 6000
+SELECT DEPARTMENT_ID, COUNT(*), AVG(SALARY)
+FROM EMPLOYEES
+GROUP BY DEPARTMENT_ID
+HAVING COUNT(*) > 5
+   AND AVG(SALARY) > 6000;
 ```
 
 ---
 
-### `ALL` — „toate valorile"
+### 5.3. HAVING fără GROUP BY
 
-Condiția este adevărată doar dacă este satisfăcută față de **toate** valorile din subcerere.
-
-```
-3 > ALL (4, 2, 5)  →  FALSE  (3 nu este > 4 și > 5)
-3 > ALL (1, 2, 0)  →  TRUE   (3 > 1 ✅, 3 > 2 ✅, 3 > 0 ✅)
-```
+Dacă `HAVING` este folosit **fără** `GROUP BY`, întregul tabel este tratat ca un singur grup, iar rezultatul conține o singură linie — **reținută doar dacă** condiția din `HAVING` este îndeplinită.
 
 ```sql
--- Angajați cu salariu mai mare decât toți angajații din departamentul 20
-WHERE SALARY > ALL (SELECT SALARY FROM EMPLOYEES WHERE DEPARTMENT_ID = 20)
--- Echivalent cu: SALARY > MAX(salariile din departamentul 20)
+-- Returnează o linie dacă salariul mediu general este mai mare de 6000
+SELECT AVG(SALARY)
+FROM EMPLOYEES
+HAVING AVG(SALARY) > 6000;
 ```
 
 ---
 
-### Echivalențe importante:
+## 6. WHERE vs. HAVING
 
-```
-> ANY   ≡  > MIN(...)      cel puțin una
-> ALL   ≡  > MAX(...)      toate
-= ANY   ≡  IN
-≠ ALL   ≡  NOT IN
-```
-
----
-
-### Comportament cu mulțimea vidă:
-
-| Operator | Subcerere returnează `∅` | Rezultat |
+| | `WHERE` | `HAVING` |
 | :--- | :--- | :--- |
-| `ALL` | Nicio valoare de comparat | `TRUE` (condiție satisfăcută trivial) |
-| `ANY` | Nicio valoare de comparat | `FALSE` (nicio valoare nu satisface) |
+| **Filtrează** | Linii individuale | Grupuri de linii |
+| **Se execută** | Înainte de grupare | După grupare |
+| **Poate folosi funcții agregat** | ❌ Nu | ✅ Da |
+| **Folosit împreună cu** | `FROM` | `GROUP BY` |
 
-> ⚠️ `NOT IN` cu o subcerere ce conține `NULL` nu va returna **nicio linie** — un comportament foarte frecvent greșit înțeles.
-
----
-
-## 8. Reguli și Restricții
-
-- O subcerere trebuie inclusă între **paranteze**.
-- Subcererea se plasează de obicei în **partea dreaptă** a operatorului de comparație.
-- Subcererile nu pot conține clauza **`ORDER BY`** (cu excepția subcererilor din `FROM`).
-- Operatorii **single-row** se folosesc doar cu subcereri ce returnează **o singură linie**.
-- Operatorii **multi-row** (`IN`, `ANY`, `ALL`) se folosesc cu subcereri ce returnează **mai multe linii**.
-- `ANY` și `ALL` funcționează doar cu subcereri ce returnează **o singură coloană**.
-- Subcererile din **`SELECT`** pot returna **doar o singură valoare** (scalare).
-- Subcererile din **`FROM`** trebuie să primească obligatoriu un **alias**, iar coloanele calculate din ele trebuie și ele să aibă **alias**.
-
----
-
-## 9. Rezumat Rapid
-
-```
-Nesincronizate (necorelate):
-  → cererea internă se execută PRIMA, o singură dată
-  → evaluare: interior → exterior
-
-Sincronizate (corelate):
-  → cererea internă se execută pentru FIECARE linie candidat
-  → evaluare: exterior → interior → exterior
-
-Unde pot apărea:
-  WHERE   → filtrare (cel mai frecvent)
-  SELECT  → valoare scalară (1 linie, 1 coloană OBLIGATORIU)
-  FROM    → tabel derivat (alias OBLIGATORIU pe subcerere și coloane calculate)
-  HAVING  → filtrare grupuri
-
-Operatori single-row:  =  <>  >  >=  <  <=     (subcerere → 1 linie)
-Operatori multi-row:   IN  ANY  ALL  NOT IN     (subcerere → n linii)
-
-ANY  →  cel puțin una   (> ANY ≡ > MIN)
-ALL  →  toate valorile  (> ALL ≡ > MAX)
-=ANY ≡  IN
-ANY cu mulțime vidă → FALSE
-ALL cu mulțime vidă → TRUE
+```sql
+-- WHERE filtrează liniile ÎNAINTE de grupare
+-- HAVING filtrează grupurile DUPĂ grupare
+SELECT DEPARTMENT_ID, AVG(SALARY)
+FROM EMPLOYEES
+WHERE JOB_ID <> 'SA_REP'        -- filtrare linii (înainte de grupare)
+GROUP BY DEPARTMENT_ID
+HAVING AVG(SALARY) > 5000       -- filtrare grupuri (după grupare)
+ORDER BY AVG(SALARY) DESC;
 ```
 
 ---
 
-## 10. Capcane Frecvente ⚠️
+## 7. Ordinea de execuție a clauzelor
+
+```
+1. FROM        → identifică tabelele
+2. WHERE       → filtrează liniile individuale
+3. GROUP BY    → grupează liniile rămase
+4. HAVING      → filtrează grupurile
+5. SELECT      → calculează expresiile și funcțiile agregat
+6. ORDER BY    → sortează rezultatul final
+```
+
+> 💡 Aceasta explică de ce:
+> - **Nu poți folosi funcții agregat în `WHERE`** — gruparea nu a avut loc încă.
+> - **Alias-urile din `SELECT` nu pot fi folosite în `HAVING`** — `SELECT` se execută după `HAVING`.
+> - **Alias-urile din `SELECT` pot fi folosite în `ORDER BY`** — acesta se execută ultimul.
+
+---
+
+## 8. Rezumat Rapid
+
+```
+Funcții agregat:
+  COUNT(*)           → numără TOATE liniile (inclusiv NULL)
+  COUNT(coloana)     → numără valorile NON-NULL
+  COUNT(DISTINCT x)  → numără valorile DISTINCTE non-NULL
+  SUM, AVG           → doar valori numerice; ignoră NULL
+  MAX, MIN           → numerice, caractere, date; ignoră NULL
+
+GROUP BY:
+  → divide tabelul în grupuri
+  → toate coloanele din SELECT (non-agregat, non-subcerere) → obligatoriu în GROUP BY
+  → subcererile nesincronizate din SELECT → NU trebuie în GROUP BY
+  → sortare implicită crescătoare după coloanele de grupare
+  → fără GROUP BY → întregul tabel = un singur grup
+  → NULL formează un grup separat
+
+HAVING:
+  → filtrează grupuri (după GROUP BY)
+  → poate folosi funcții agregat (WHERE nu poate)
+  → fără GROUP BY → se aplică pe întregul tabel ca un grup
+
+WHERE  → filtrează linii (înainte de grupare)
+HAVING → filtrează grupuri (după grupare)
+
+Ordine execuție: FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY
+```
+
+---
+
+## 9. Capcane Frecvente ⚠️
 
 | Situație | Problemă | Soluție |
 | :--- | :--- | :--- |
-| Operator single-row, subcerere returnează mai multe linii | Eroare ORA-01427 | Folosește `IN`, `ANY` sau `ALL` |
-| Subcerere în `SELECT` returnează mai mult de o linie | Eroare Oracle | Subcererea din `SELECT` trebuie să fie **scalară** (1 linie, 1 coloană) |
-| Subcerere în `FROM` fără alias | Eroare Oracle | Alias-ul este **obligatoriu** pentru tabelul derivat |
-| Coloană calculată în `FROM` fără alias | Nu poate fi referențiată din exterior | Adaugă alias coloanelor calculate din subcererea în `FROM` |
-| `NOT IN` când subcererea conține `NULL` | Nu returnează nicio linie | Filtrează `NULL` cu `WHERE col IS NOT NULL` sau folosește `NOT EXISTS` |
-| `ALL` cu subcerere vidă | Returnează `TRUE` — poate fi neașteptat | Verifică dacă subcererea poate returna mulțime vidă |
-| `ANY` cu subcerere vidă | Returnează `FALSE` — niciun rezultat | Idem — tratează cazul subcererii vide |
-| `ORDER BY` în subcerere (în `WHERE`) | Eroare Oracle | `ORDER BY` nu este permis decât în subcereri din `FROM` |
+| Coloană în `SELECT` care nu e în `GROUP BY` | Eroare ORA-00979 | Adaugă coloana în `GROUP BY` sau aplică funcție agregat |
+| `COUNT(coloana)` pe coloană cu NULL | Returnează mai puțin decât `COUNT(*)` | Înțelege că `COUNT(col)` ignoră NULL — folosește `COUNT(*)` dacă vrei toate liniile |
+| `AVG` pe coloane cu `NULL` | Media calculată fără NULL (poate induce în eroare) | Folosește `AVG(NVL(col, 0))` dacă vrei să incluzi NULL ca 0 |
+| Funcție agregat în `WHERE` | Eroare Oracle | Mută condiția în `HAVING` |
+| Alias din `SELECT` folosit în `HAVING` | Eroare Oracle | `HAVING` se execută înainte de `SELECT` — rescrie condiția complet |
+| Alias din `SELECT` folosit în `WHERE` | Eroare Oracle | Idem — `WHERE` se execută înainte de `SELECT` |
