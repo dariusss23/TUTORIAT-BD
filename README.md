@@ -1,6 +1,6 @@
-# TUTORIAT-BD
+# 📚 Tutoriat Baze de Date
 
-## 📚 Tutoriat Baze de Date
+## Bine ati venit ! 😄
 
 ### 👨🏻‍🏫 Tutori
 - Sava Darius-Stefan
