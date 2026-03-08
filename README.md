@@ -17,7 +17,7 @@
 | Tutoriat | Tema Abordata | Status |
 | :--- | :--- | :--- |
 | **tutoriat1** | ⏱️ Diagrame, Tabele, Relatii | 🔜 Urmeaza |
-| **tutoriat2** | ⏱️ In lucru | 🔜 Urmeaza |
+| **tutoriat2** | ⏱️ Concepte de bază și interogări SELECT | 🔜 Urmeaza |
 | **tutoriat3** | ⏱️ In lucru | 🔜 Urmeaza |
 | **tutoriat4** | ⏱️ In lucru | 🔜 Urmeaza |
 | **tutoriat5** | ⏱️ In lucru | 🔜 Urmeaza |
