@@ -23,7 +23,7 @@
 | **tutoriat3** | ⏱️ Limbajul de Manipulare a datelor (LMD), Secvențe | 🔜 Urmeaza |
 | **tutoriat4** | ⏱️ SELECT, WHERE, ORDER BY și Pattern Matching | 🔜 Urmeaza |
 | **tutoriat5** | ⏱️ Funcții SQL | 🔜 Urmeaza |
-| **tutoriat6** | ⏱️ In lucru | 🔜 Urmeaza |
+| **tutoriat6** | ⏱️ JOIN | 🔜 Urmeaza |
 | **tutoriat7** | ⏱️ In lucru | 🔜 Urmeaza |
 | **tutoriat8** | ⏱️ In lucru | 🔜 Urmeaza |
 | **tutoriat9** | ⏱️ In lucru | 🔜 Urmeaza |
