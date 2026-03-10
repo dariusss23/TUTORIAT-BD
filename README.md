@@ -20,7 +20,7 @@
 | :--- | :--- | :--- |
 | **tutoriat1** | ⏱️ Diagrame, Tabele, Relații | 🔜 Urmeaza |
 | **tutoriat2** | ⏱️ Limbajul de Control al Datelor (LCD)/ Manipulare a Datelor LDD | 🔜 Urmeaza |
-| **tutoriat3** | ⏱️ LMD, Secvențe | 🔜 Urmeaza |
+| **tutoriat3** | ⏱️ Limbajul de Manipulare a datelor (LMD), Secvențe | 🔜 Urmeaza |
 | **tutoriat4** | ⏱️ SELECT, WHERE, ORDER BY și Pattern Matching | 🔜 Urmeaza |
 | **tutoriat5** | ⏱️ In lucru | 🔜 Urmeaza |
 | **tutoriat6** | ⏱️ In lucru | 🔜 Urmeaza |
