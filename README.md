@@ -18,7 +18,7 @@
 
 | Tutoriat | Tema Abordata | Status |
 | :--- | :--- | :--- |
-| **tutoriat1** | ⏱️ Diagrame, Tabele, Relații, Normalizare | 🔜 Urmeaza |
+| **tutoriat1** | ⏱️ Tabele, Relații, Diagrame, Normalizare | 🔜 Urmeaza |
 | **tutoriat2** | ⏱️ În lucru | 🔜 Urmeaza |
 | **tutoriat3** | ⏱️ În lucru | 🔜 Urmeaza |
 | **tutoriat4** | ⏱️ În lucru | 🔜 Urmeaza |
