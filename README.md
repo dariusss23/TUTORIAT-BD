@@ -19,12 +19,12 @@
 | Tutoriat | Tema Abordata | Status |
 | :--- | :--- | :--- |
 | **tutoriat1** | ⏱️ Diagrame, Tabele, Relații, Normalizare | 🔜 Urmeaza |
-| **tutoriat2** | ⏱️ Limbajul de Control al Datelor (LCD)/ Manipulare a Datelor LDD | 🔜 Urmeaza |
-| **tutoriat3** | ⏱️ Limbajul de Manipulare a datelor (LMD), Secvențe | 🔜 Urmeaza |
-| **tutoriat4** | ⏱️ SELECT, WHERE, ORDER BY și Pattern Matching | 🔜 Urmeaza |
-| **tutoriat5** | ⏱️ Funcții SQL | 🔜 Urmeaza |
-| **tutoriat6** | ⏱️ JOIN | 🔜 Urmeaza |
-| **tutoriat7** | ⏱️ Funcții Grup și Clauzele GROUP BY, HAVING | 🔜 Urmeaza |
-| **tutoriat8** | ⏱️ Cereri Ierarhice, Clauza WITH și Operatorul EXISTS | 🔜 Urmeaza |
-| **tutoriat9** | ⏱️ Operatorul DIVISION și Vizualizări (VIEW) | 🔜 Urmeaza |
-| **tutoriat10** | ⏱️ Indexuri, Arbore Algebric, Optimizări | 🔜 Urmeaza |
+| **tutoriat2** | ⏱️ În lucru | 🔜 Urmeaza |
+| **tutoriat3** | ⏱️ În lucru | 🔜 Urmeaza |
+| **tutoriat4** | ⏱️ În lucru | 🔜 Urmeaza |
+| **tutoriat5** | ⏱️ În lucru | 🔜 Urmeaza |
+| **tutoriat6** | ⏱️ În lucru | 🔜 Urmeaza |
+| **tutoriat7** | ⏱️ În lucru | 🔜 Urmeaza |
+| **tutoriat8** | ⏱️ În lucru | 🔜 Urmeaza |
+| **tutoriat9** | ⏱️ În lucru | 🔜 Urmeaza |
+| **tutoriat10** | ⏱️ În lucru | 🔜 Urmeaza |
