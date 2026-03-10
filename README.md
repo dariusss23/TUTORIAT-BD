@@ -17,9 +17,9 @@
 | Tutoriat | Tema Abordata | Status |
 | :--- | :--- | :--- |
 | **tutoriat1** | ⏱️ Diagrame, Tabele, Relatii | 🔜 Urmeaza |
-| **tutoriat2** | ⏱️ LCD, LDD | 🔜 Urmeaza |
+| **tutoriat2** | ⏱️ Limbajul de Control al Datelor (LCD)/ Manipulare a Datelor LDD | 🔜 Urmeaza |
 | **tutoriat3** | ⏱️ LMD, Secvente | 🔜 Urmeaza |
-| **tutoriat4** | ⏱️ Concepte de bază și interogări SELECT | 🔜 Urmeaza |
+| **tutoriat4** | ⏱️ SELECT, WHERE, ORDER BY si Pattern Matching | 🔜 Urmeaza |
 | **tutoriat5** | ⏱️ In lucru | 🔜 Urmeaza |
 | **tutoriat6** | ⏱️ In lucru | 🔜 Urmeaza |
 | **tutoriat7** | ⏱️ In lucru | 🔜 Urmeaza |
