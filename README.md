@@ -18,7 +18,7 @@
 
 | Tutoriat | Tema Abordată | Status |
 | :--- | :--- | :--- |
-| **tutoriat1** | ⏱️ Tabele, Relații, Diagrame, Normalizare | 🏁 **Finalizat** |
+| **tutoriat1** | ⏱️ Tabele, Relații, Diagrame, Normalizare | ✔️ Finalizat |
 | **tutoriat2** | ⏱️  Limbajul de Control al Datelor (LCD)/ Definire a Datelor LDD | 🔜 Urmează |
 | **tutoriat3** | ⏱️ În lucru | 🔜 Urmează |
 | **tutoriat4** | ⏱️ În lucru | 🔜 Urmează |
