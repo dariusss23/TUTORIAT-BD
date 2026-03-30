@@ -879,4 +879,3 @@ ORDER BY c.CONSTRAINT_TYPE, c.CONSTRAINT_NAME;
 
 ---
 
-*Tutorial generat pentru uz didactic — SQL Oracle 11g+*
