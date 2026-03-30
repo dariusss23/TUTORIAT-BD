@@ -21,7 +21,7 @@
 | **tutoriat1** | ⏱️ Tabele, Relații, Diagrame, Normalizare | ✔️ Finalizat |
 | **tutoriat2** | ⏱️ Limbajul de Control al Datelor (LCD)/ Definire a Datelor LDD | ✔️ Finalizat |
 | **tutoriat3** | ⏱️ Limbajul de Manipulare a Datelor (LCD)  | 🔜 Urmează |
-| **tutoriat4** | ⏱️ În lucru | 🔜 Urmează |
+| **tutoriat4** | ⏱️ SELECT + Funcții ORACLE | 🔜 Urmează |
 | **tutoriat5** | ⏱️ În lucru | 🔜 Urmează |
 | **tutoriat6** | ⏱️ În lucru | 🔜 Urmează |
 | **tutoriat7** | ⏱️ În lucru | 🔜 Urmează |
