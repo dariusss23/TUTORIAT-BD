@@ -156,7 +156,7 @@ LDD (CREATE etc) → COMMIT implicit automat → distruge SAVEPOINT-urile anteri
 
 ---
 
-## 4. Demo SQL Developer — LCD
+## 4. Demo SQL Developer
 
 ### Setup inițial
 
