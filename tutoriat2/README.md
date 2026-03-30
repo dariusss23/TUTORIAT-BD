@@ -158,8 +158,6 @@ LDD (CREATE etc) → COMMIT implicit automat → distruge SAVEPOINT-urile anteri
 
 ## 4. Demo SQL Developer — LCD
 
-> 🖥️ **Această secțiune se rulează live în Oracle SQL Developer**
-
 ### Setup inițial
 
 ```sql
