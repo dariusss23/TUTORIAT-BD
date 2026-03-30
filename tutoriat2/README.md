@@ -30,19 +30,30 @@ Dacă sistemul pică **între** cele două operații, banii dispar. Tranzacțiil
 
 | | LCD (TCL) | LDD (DDL) |
 | :--- | :--- | :--- |
-| **Ce controlează** | *Datele* (rânduri) | *Structura* (tabele, coloane) |
+| **Ce controlează** | *Tranzacțiile* (confirmare/anulare) | *Structura* (tabele, coloane) |
 | **Reversibil?** | ✅ Da (cu ROLLBACK) | ❌ Nu (COMMIT implicit) |
-| **Exemple** | `INSERT`, `UPDATE`, `DELETE` | `CREATE`, `ALTER`, `DROP` |
+| **Exemple** | `COMMIT`, `ROLLBACK`, `SAVEPOINT` | `CREATE`, `ALTER`, `DROP` |
 
 ---
 
 ## 2. Limbajul de Control al Datelor (LCD / TCL)
 
-**LCD** gestionează **tranzacțiile** — unități logice de lucru formate dintr-o secvență de comenzi `INSERT`, `UPDATE`, `DELETE` care trebuie să se execute **atomic** pentru a menține consistența bazei de date.
+> ⚠️ **Notă terminologică — LCD vs TCL**
+>
+> În clasificarea internațională standard SQL, comenzile `COMMIT`, `ROLLBACK` și `SAVEPOINT` aparțin unui subset distinct numit **TCL — Transaction Control Language** (Limbajul de Control al Tranzacțiilor), separat de restul categoriilor:
+>
+> | Abreviere internațională | Abreviere română | Comenzi |
+> | :--- | :--- | :--- |
+> | **DML** — Data Manipulation Language | **LMD** | `INSERT`, `UPDATE`, `DELETE`, `SELECT` |
+> | **DDL** — Data Definition Language | **LDD** | `CREATE`, `ALTER`, `DROP`, `TRUNCATE` |
+> | **TCL** — Transaction Control Language | *(uneori inclus în LCD)* | `COMMIT`, `ROLLBACK`, `SAVEPOINT` |
+
+
+**LCD/TCL** gestionează **tranzacțiile** — unități logice de lucru formate dintr-o secvență de comenzi `INSERT`, `UPDATE`, `DELETE` care trebuie să se execute **atomic** pentru a menține consistența bazei de date.
 
 > 💡 **Prin „modificări" se înțelege aplicarea comenzilor:** `INSERT`, `UPDATE`, `DELETE`.
 
-### Comenzile LCD
+### Comenzile LCD/TCL
 
 | Comandă | Descriere |
 | :--- | :--- |
@@ -674,7 +685,7 @@ ORDER BY c.CONSTRAINT_TYPE;
 
 > 🎯 Rezolvă exercițiile în ordine. Fiecare exercițiu se bazează pe cel anterior.
 
-### Exercițiul 1 — Tranzacții (LCD)
+### Exercițiul 1 — Tranzacții (LCD/TCL)
 
 Dată secvența de comenzi, precizați starea tabelului `T` la fiecare pas:
 
@@ -833,33 +844,34 @@ ORDER BY c.CONSTRAINT_TYPE, c.CONSTRAINT_NAME;
 ### Cheat Sheet
 
 ```
-╔══════════════════════════════════════════════════════════════╗
-║                         LCD (TCL)                            ║
-╠══════════════════════════════════════════════════════════════╣
-║  COMMIT           → permanentizează TOT + distruge SAVEPOINT ║
-║  ROLLBACK         → anulează TOT până la ultimul COMMIT      ║
-║  ROLLBACK TO P    → anulează doar ce e după savepoint P      ║
-║  SAVEPOINT P      → marchează punct intermediar              ║
-║  ⚠️  LDD → COMMIT implicit → distruge SAVEPOINT-urile!       ║
-╠══════════════════════════════════════════════════════════════╣
-║                         LDD (DDL)                            ║
-╠══════════════════════════════════════════════════════════════╣
-║  CREATE TABLE     → Metoda 1: explicit                       ║
-║                     Metoda 2: AS SELECT (preia doar NOT NULL)║
-║  ALTER TABLE      → ADD / MODIFY / DROP COLUMN               ║
-║                  → ADD / DROP / ENABLE / DISABLE CONSTRAINT  ║
-║  DROP TABLE       → șterge tot (atenție FK!)                 ║
-║  TRUNCATE         → șterge datele, păstrează structura       ║
-║  RENAME           → invalidează obiecte dependente           ║
-╠══════════════════════════════════════════════════════════════╣
-║                      CONSTRÂNGERI                            ║
-╠══════════════════════════════════════════════════════════════╣
-║  NOT NULL         → DOAR la nivel de coloană                 ║
-║  FOREIGN KEY      → DOAR la nivel de tabel                   ║
-║  FK referință     → DOAR la PK sau UNIQUE                    ║
-║  CHECK la coloană → NU poate referi altă coloană             ║
-║  Nume constrângeri→ UNIC la nivelul serverului!              ║
-╚══════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════╗
+║              LCD (TCL) — Controlul Tranzacțiilor                 ║
+║  [COMMIT/ROLLBACK/SAVEPOINT = TCL în clasificarea internațională] ║
+╠══════════════════════════════════════════════════════════════════╣
+║  COMMIT           → permanentizează TOT + distruge SAVEPOINT     ║
+║  ROLLBACK         → anulează TOT până la ultimul COMMIT          ║
+║  ROLLBACK TO P    → anulează doar ce e după savepoint P          ║
+║  SAVEPOINT P      → marchează punct intermediar                  ║
+║  ⚠️  LDD → COMMIT implicit → distruge SAVEPOINT-urile!           ║
+╠══════════════════════════════════════════════════════════════════╣
+║                         LDD (DDL)                                ║
+╠══════════════════════════════════════════════════════════════════╣
+║  CREATE TABLE     → Metoda 1: explicit                           ║
+║                     Metoda 2: AS SELECT (preia doar NOT NULL)    ║
+║  ALTER TABLE      → ADD / MODIFY / DROP COLUMN                   ║
+║                  → ADD / DROP / ENABLE / DISABLE CONSTRAINT      ║
+║  DROP TABLE       → șterge tot (atenție FK!)                     ║
+║  TRUNCATE         → șterge datele, păstrează structura           ║
+║  RENAME           → invalidează obiecte dependente               ║
+╠══════════════════════════════════════════════════════════════════╣
+║                      CONSTRÂNGERI                                ║
+╠══════════════════════════════════════════════════════════════════╣
+║  NOT NULL         → DOAR la nivel de coloană                     ║
+║  FOREIGN KEY      → DOAR la nivel de tabel                       ║
+║  FK referință     → DOAR la PK sau UNIQUE                        ║
+║  CHECK la coloană → NU poate referi altă coloană                 ║
+║  Nume constrângeri→ UNIC la nivelul serverului!                  ║
+╚══════════════════════════════════════════════════════════════════╝
 ```
 
 ### Capcane Frecvente
@@ -876,6 +888,3 @@ ORDER BY c.CONSTRAINT_TYPE, c.CONSTRAINT_NAME;
 | `CHECK` la coloană referențiază alta | Eroare ORA-02438 | Mută constrângerea la nivel de tabel |
 | Micșorare dimensiune cu date | Eroare Oracle | Posibil doar cu coloana goală sau tabelul gol |
 | `ADD COLUMN` cu `DEFAULT` | Rândurile existente primesc NULL | În Oracle 11g+, DEFAULT + NOT NULL aplică valoarea |
-
----
-
