@@ -21,7 +21,7 @@
 | **tutoriat1** | ⏱️ Tabele, Relații, Diagrame, Normalizare | ✔️ Finalizat |
 | **tutoriat2** | ⏱️ Limbajul de Control al Datelor (LCD)/ Definire a Datelor LDD | ✔️ Finalizat |
 | **tutoriat3** | ⏱️ Limbajul de Manipulare a Datelor (LCD)  | ✔️ Finalizat |
-| **tutoriat4** | ⏱️ SELECT, WHERE, ORDER BY | 🔜 Urmează |
+| **tutoriat4** | ⏱️ SELECT, WHERE, ORDER BY | ✔️ Finalizat |
 | **tutoriat5** | ⏱️ Funcții SQL | 🔜 Urmează |
 | **tutoriat6** | ⏱️ JOIN | 🔜 Urmează |
 | **tutoriat7** | ⏱️ În lucru | 🔜 Urmează |
