@@ -516,34 +516,49 @@ LEFT JOIN EMPLOYEES M ON E.MANAGER_ID = M.EMPLOYEE_ID;
 
 ---
 
-### 🎓 Exercițiu Ghidat 4
+## Greșeala de la tutoriat
 
-**Sarcină**: Afișați angajații care câștigă **mai mult** decât managerul lor.
+Vom analizăm modul corect de a interoga o ierarhie de angajați și manageri dintr-un tabel unic (`EMPLOYEES`), evidențiind importanța utilizării cheilor corecte în operațiunile de `JOIN`.
 
-<details>
-<summary>💡 Indiciu</summary>
+### Diferența de Logică
 
-SELF JOIN + comparare salarii în WHERE.
-</details>
+Diferența majoră constă în **criteriul de unire (JOIN)**. Într-o bază de date relațională, pentru a asocia un angajat cu managerul său, trebuie să potrivim un identificator unic (cheia primară cu cheia străină), nu o valoare subiectivă precum salariul.
 
-<details>
-<summary>✅ Soluție</summary>
+| Tip Interogare | Criteriu JOIN | Rezultat |
+| :--- | :--- | :--- |
+| **CORECT** | `E.MANAGER_ID = M.EMPLOYEE_ID` | Relație ierarhică validă (cine pe cine conduce). |
+| **GRESIT** | `E.SALARY > M.SALARY` | Produs cartezian logic invalid; asociază angajații cu orice persoană care câștigă mai puțin. |
+
+### Varianta Corectă (Self Join pe ID)
+
+Această interogare utilizează corect `MANAGER_ID` pentru a stabili legătura directă între un subordonat și superiorul său, filtrând apoi rezultatele după salariu.
 
 ```sql
 SELECT E.FIRST_NAME || ' ' || E.LAST_NAME AS Angajat,
-       E.SALARY AS Salariu_Angajat,
-       M.FIRST_NAME || ' ' || M.LAST_NAME AS Manager,
+       E.SALARY AS Salariu,
+       M.FIRST_NAME AS Manager,
        M.SALARY AS Salariu_Manager
 FROM EMPLOYEES E
 JOIN EMPLOYEES M ON E.MANAGER_ID = M.EMPLOYEE_ID
 WHERE E.SALARY > M.SALARY;
 ```
 
-**Explicație:**
-- `E` = angajatul
-- `M` = managerul (aceeași tabelă)
-- `WHERE E.SALARY > M.SALARY` = doar cei care câștigă mai mult
-</details>
+### Varianta Eronată (Join pe Salariu)
+
+Această interogare eșuează deoarece `ON E.SALARY > M.SALARY` nu stabilește o relație de subordonare. Rezultatul va returna combinații arbitrare de angajați care nu au neapărat o legătură de management între ei.
+
+```sql
+-- GRESIT: Aceasta interogare nu identifică managerul, 
+-- ci creează o listă de combinații aleatorii bazată pe salariu.
+SELECT E.FIRST_NAME || ' ' || E.LAST_NAME AS Angajat,
+       E.SALARY AS Salariu,
+       M.FIRST_NAME AS Manager,
+       M.SALARY AS Salariu_Manager
+FROM EMPLOYEES E
+JOIN EMPLOYEES M ON E.SALARY > M.SALARY;
+```
+
+> **Notă:** Folosirea salariului ca și condiție de `JOIN` în loc de `WHERE` (ca filtru) duce la pierderea integrității datelor și la rezultate irelevante pentru ierarhia organizațională.
 
 ---
 
