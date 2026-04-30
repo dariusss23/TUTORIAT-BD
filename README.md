@@ -22,8 +22,9 @@
 | **tutoriat2** | ⏱️ Limbajul de Control al Datelor (LCD)/ Definire a Datelor LDD | ✔️ Finalizat |
 | **tutoriat3** | ⏱️ Limbajul de Manipulare a Datelor (LCD)  | ✔️ Finalizat |
 | **tutoriat4** | ⏱️ Analiza completă a sintaxei SELECT | ✔️ Finalizat |
-| **tutoriat5** | ⏱️ Funcții SQL | 🔜 Urmează |
-| **tutoriat6** | ⏱️ JOIN | 🔜 Urmează |
+| **tutoriat5** | ⏱️ JOIN | ✔️ Finalizat |
+| **tutoriat6** | ⏱️ Cereri Ierarhice, WITH și EXISTS
+ | ✔️ Finalizat |
 | **tutoriat7** | ⏱️ În lucru | 🔜 Urmează |
 | **tutoriat8** | ⏱️ În lucru | 🔜 Urmează |
 | **tutoriat9** | ⏱️ În lucru | 🔜 Urmează |
