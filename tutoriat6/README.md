@@ -775,12 +775,12 @@ WHERE EXISTS (
 ╔═══════════════════════════════════════════════════════════════╗
 ║             CERERI IERARHICE                                  ║
 ╠═══════════════════════════════════════════════════════════════╣
-║ START WITH conditie   → de unde pornești (ex: CEO)           ║
-║ CONNECT BY PRIOR ...  → cum navighezi (spre subalterni/șefi) ║
-║ LEVEL                 → treapta curentă (1 = punct de start) ║
+║ START WITH conditie   → de unde pornești (ex: CEO)            ║
+║ CONNECT BY PRIOR ...  → cum navighezi (spre subalterni/șefi)  ║
+║ LEVEL                 → treapta curentă (1 = punct de start)  ║
 ║                                                               ║
-║ PRIOR pe stânga → cobori (șef → subaltern)                   ║
-║ PRIOR pe dreapta → urci (subaltern → șef)                    ║
+║ PRIOR pe stânga → cobori (șef → subaltern)                    ║
+║ PRIOR pe dreapta → urci (subaltern → șef)                     ║
 ║                                                               ║
 ║ WHERE LEVEL <= n  → limitezi afișarea (ramura rămâne intactă) ║
 ║ AND în CONNECT BY → tai ramura întreagă                       ║
@@ -795,20 +795,20 @@ WHERE EXISTS (
 ║                                                               ║
 ║ ✅ Calculezi o dată, folosești de câte ori vrei               ║
 ║ ✅ Poți defini mai multe blocuri (separate prin virgulă)      ║
-║ ✅ Un bloc poate folosi blocurile definite înaintea lui        ║
-║ ⚠️ Nu ; după blocul WITH — doar la finalul query-ului        ║
+║ ✅ Un bloc poate folosi blocurile definite înaintea lui       ║
+║ ⚠️ Nu ; după blocul WITH — doar la finalul query-ului         ║
 ╚═══════════════════════════════════════════════════════════════╝
 
 ╔═══════════════════════════════════════════════════════════════╗
 ║             OPERATORUL EXISTS                                 ║
 ╠═══════════════════════════════════════════════════════════════╣
-║ WHERE EXISTS (SELECT 1 FROM ... WHERE legatura)              ║
+║ WHERE EXISTS (SELECT 1 FROM ... WHERE legatura)               ║
 ║                                                               ║
 ║ ✅ = "există cel puțin un rând care îndeplinește condiția"    ║
 ║ ❌ NOT EXISTS = "nu există niciun rând"                       ║
-║                                                               ║
-║ ⚠️ Subcererea TREBUIE să fie legată de tabelul exterior!     ║
-║ ⚠️ NOT IN cu NULL → 0 rânduri. Folosește NOT EXISTS în loc   ║
+║                                                                ║
+║ ⚠️ Subcererea TREBUIE să fie legată de tabelul exterior!      ║
+║ ⚠️ NOT IN cu NULL → 0 rânduri. Folosește NOT EXISTS în loc    ║
 ║                                                               ║
 ║ IN    → "valoarea mea e în lista asta?"                       ║
 ║ EXISTS → "există ceva acolo legat de mine?"                   ║
